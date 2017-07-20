@@ -88,9 +88,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       * Remember: you'll need to convert radar from polar to cartesian coordinates.
     */
     // first measurement
-    cout << "EKF: " << endl;
+    //cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1; // Need to play around with later
+    ekf_.x_ << 1, 1, 0, 0; // Need to play around with later
 
 
     // First timestamp recorded;
@@ -107,7 +107,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float ro = measurement_pack.raw_measurements_[0];  // The distance from origin to the object
       float theta = measurement_pack.raw_measurements_[1]; // angle made by ro with the y axis;
       float ro_dot = measurement_pack.raw_measurements_[2]; // velocity in the direction of ro
-      ekf_.x_ << ro*cos(theta), ro*sin(theta),1,1; //ro_dot*cos(theta), ro_dot*sin(theta);
+      ekf_.x_ << ro*cos(theta), ro*sin(theta),0,0; //ro_dot*cos(theta), ro_dot*sin(theta);
 
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
@@ -156,12 +156,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         dt_3/2*noise_ax, 0, dt_2*noise_ax, 0,
         0, dt_3/2*noise_ay, 0, dt_2*noise_ay;
 
-  cout << "call predict"<<endl;
+  //cout << "call predict"<<endl;
 
   ekf_.Predict();
 
 
-  cout << "finish predict"<<endl;
+  //cout << "finish predict"<<endl;
 
   /*****************************************************************************
    *  Update
@@ -176,13 +176,22 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
     ekf_.R_ = R_radar_; // Line 32;
+
+    //printf("%s %d\n",__FILE__,__LINE__);
+
     ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+
+    //printf("%s %d\n",__FILE__,__LINE__);
 
     // calling UpdateEKF() function which is defined for update for radar measurements;
 
-    cout << "H_" << endl << ekf_.H_ << endl << endl;
+    //cout << "H_" << endl << ekf_.H_ << endl << endl;
+
+    //printf("%s %d\n",__FILE__,__LINE__);
 
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+
+    //printf("%s %d\n",__FILE__,__LINE__);
 
   } else {
     // Laser updates
@@ -190,8 +199,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.H_ = H_laser_; // defined in line 41;
     ekf_.R_ = R_laser_; // Given in line 28;
 
+    //printf("%s %d\n",__FILE__,__LINE__);
+
     // calling Update() function which is defined for update for lidar measurements;
     ekf_.Update(measurement_pack.raw_measurements_);
+
+    //printf("%s %d\n",__FILE__,__LINE__);
   }
 
   // print the output

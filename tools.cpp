@@ -55,6 +55,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     * Calculate a Jacobian here.
   */
 	MatrixXd Hj(3,4);
+
+	//printf("%s %d\n",__FILE__,__LINE__);
 	//recover state parameters
 	//float ro = ;  // The distance from origin to the object
 	//float theta = ; // angle made by ro with the y axis;
@@ -74,13 +76,17 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	if(fabs(c1) < 0.0001){
 		//cout << "CalculateJacobian () - Error - Division by Zero" << endl;
 		//return Hj;
-		c1 = 1;
+		c1 = 0.01;
 	}
+
+	//printf("%s %d\n",__FILE__,__LINE__);
 
 
 	Hj << (px/c2), (py/c2), 0, 0,
 		  -(py/c1), (px/c1), 0, 0,
 		  py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
+
+	//printf("%s %d\n",__FILE__,__LINE__);
 
 	return Hj;
 }

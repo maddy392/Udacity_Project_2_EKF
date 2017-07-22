@@ -85,6 +85,13 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd z_pred = VectorXd(3);
   //printf("%s %d\n",__FILE__,__LINE__);
 
+  if (fabs(px*px + py*py) < 0.0001)
+  {
+    px = 0.1;
+    py = 0.1;
+  }
+
+
   z_pred << sqrt(px*px + py*py), atan2(py,px), (px*vx + py*vy)/(sqrt(px*px + py*py));
 
   //printf("%s %d\n",__FILE__,__LINE__);
@@ -92,7 +99,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - z_pred; // in radar we need to do h(x) instead of H*x as in the case of lidar;
 
   // normalizing y(1) to be between -pi and pi. 
-  while (y(1) < M_PI)
+  while (y(1) < (-1 * M_PI))
     y(1) += 2*M_PI;
   while (y(1) > M_PI)
     y(1) -= 2*M_PI;

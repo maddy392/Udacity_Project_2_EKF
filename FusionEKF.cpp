@@ -90,7 +90,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     //cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 0, 0; // Need to play around with later
+    ekf_.x_ << 0, 0, 0, 0; // Need to play around with later
 
 
     // First timestamp recorded;
@@ -175,11 +175,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-    ekf_.R_ = R_radar_; // Line 32;
+    //ekf_.R_ = R_radar_; // Line 32;
 
     //printf("%s %d\n",__FILE__,__LINE__);
 
-    ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+    //ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
 
     //printf("%s %d\n",__FILE__,__LINE__);
 
@@ -189,7 +189,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     //printf("%s %d\n",__FILE__,__LINE__);
 
-    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+    //ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
     //printf("%s %d\n",__FILE__,__LINE__);
 
